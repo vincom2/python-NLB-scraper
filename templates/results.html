@@ -1,0 +1,12 @@
+$def with (books,pages)
+
+$if books:
+	<p>Displaying $pages pages of results<br/><br/>
+	$for b in books:
+		$ link = "http://catalogue.nlb.gov.sg/" + b['href']
+		<a href=$link target="_blank">$b.text.strip()</a><br/>
+
+$else:
+	<h1>ERROR</h1>
+	<p>Encountered an error
+	<p>Go <a href="javascript:history.back()">back</a>
