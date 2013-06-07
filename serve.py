@@ -73,6 +73,8 @@ class results:
         return render.results(books,pages)
 
 
-if __name__ == "__main__":
-    app = web.application(urls, globals())
-    app.run()
+# if __name__ == "__main__":
+web.debug = False
+app = web.application(urls, globals(),autoreload=False).wsgifunc()
+# application = app.wsgifunc()
+# app.run()
