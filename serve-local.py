@@ -25,9 +25,8 @@ def get_books(url):
 
 
 def search_for(s):
-    findthis = s.decode("utf-8").replace(" ","+")
-    (books,next) = get_books("http://catalogue.nlb.gov.sg/cgi-bin/spydus.exe/ENQ/EXPNOS/BIBENQ?ENTRY=" +
-        findthis + "&ENTRY_NAME=BS&ENTRY_TYPE=K&SORTS=DTE.DATE1.DESC]HBT.SOVR")
+    # findthis = s.decode("utf-8").replace(" ","+")
+    (books,next) = post_get_books(s)
     pg = 1
     while next != None:
         pg += 1
@@ -36,6 +35,21 @@ def search_for(s):
 
     return (books,pg)
 
+#oh, the code duplication...
+def post_get_books(s):
+    payload = {'ENTRY1_NAME':'BS', 'ENTRY1':s, 'ENTRY1_TYPE':'K', 'ENTRY1_OPER':'+','NRECS':'100',
+        'SORTS':'DTE.DATE1.DESC]HBT.SOVR', 'SEARCH_FORM':'/cgi-bin/spydus.exe/MSGTRN/EXPNOS/COMB?HOMEPRMS=COMBPARAMS'}
+    result = requests.post("http://catalogue.nlb.gov.sg/cgi-bin/spydus.exe/ENQ/EXPNOS/BIBENQ", data=payload)
+    if result.status_code != 200:
+        bad_stuff()
+
+    soup = BeautifulSoup(result.content)
+    books = soup.find_all("a", "results-title")
+    next = soup.find("a","next")
+    if next == None:
+        return (books,None)
+    else:
+        return (books,next['href'])
 
 
 urls = (
@@ -58,18 +72,19 @@ class index:
     def POST(self):
         f = searchfor_form()
         f.validates()
-        return render.results(*search_for(f.d.findthis))
+        (books,pages) = search_for(f.d.findthis)
+        return render.results(books,f.d.findthis,pages)
 
 class error:
     def GET(self):
         return render.error()
 
 class results:
-    def GET(self,books,pages):
-        return render.results(books,pages)
+    def GET(self,books,term,pages):
+        return render.results(books,term,pages)
 
 
 if __name__ == "__main__":
-    # web.debug = False
+    web.debug = False
     app = web.application(urls, globals(),autoreload=False)
     app.run()
