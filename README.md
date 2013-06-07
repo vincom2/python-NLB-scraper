@@ -7,7 +7,10 @@ Uh... well, for waiting a little longer, you get a plaintext list of _all_ resul
 
 ---
 ###Usage:<br/>
+Put serve.py and templates/ (and yes, the .html files inside templates/, obviously) into the same directory. Then
 ```
 python serve.py
 ```
-Then visit ```127.0.0.1:8080``` in your browser.
+Then visit ```127.0.0.1:8080``` in your browser.<br/>
+<br/>
+Oh, also, Python 2.7, preferably.
