@@ -26,10 +26,6 @@ def get_books(url):
 
 def search_for(s):
     findthis = s.decode("utf-8").replace(" ","+")
-    # result = requests.get("http://catalogue.nlb.gov.sg/cgi-bin/spydus.exe/ENQ/EXPNOS/BIBENQ?ENTRY=" +
-    #     findthis + "&ENTRY_NAME=BS&ENTRY_TYPE=K&SORTS=DTE.DATE1.DESC]HBT.SOVR")
-
-    # soup = BeautifulSoup(result.content)
     (books,next) = get_books("http://catalogue.nlb.gov.sg/cgi-bin/spydus.exe/ENQ/EXPNOS/BIBENQ?ENTRY=" +
         findthis + "&ENTRY_NAME=BS&ENTRY_TYPE=K&SORTS=DTE.DATE1.DESC]HBT.SOVR")
     pg = 1
@@ -73,8 +69,5 @@ class results:
         return render.results(books,pages)
 
 
-# if __name__ == "__main__":
 web.debug = False
 app = web.application(urls, globals(),autoreload=False).wsgifunc()
-# application = app.wsgifunc()
-# app.run()
